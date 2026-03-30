@@ -28,7 +28,13 @@ function App() {
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
           />
-
+          />
+          <button type="submit">Login</button>
+        </form>
+      </div>
+    </div>
+  );
+}
       <Signup />
 
       <Login />

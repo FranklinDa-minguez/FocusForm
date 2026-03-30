@@ -9,8 +9,9 @@ function App() {
 
   
   return (
-    <div>
-      <h1 style={{ textAlign: "center" }}>FocusForm</h1>
+    <div className="app-container">
+      <div className="auth-card">
+        <h1>FocusForm</h1>
 
       <Signup />
 

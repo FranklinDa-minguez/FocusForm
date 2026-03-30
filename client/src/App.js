@@ -34,13 +34,18 @@ function App() {
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
           />
-          />
+          
           <button type="submit">Login</button>
         </form>
-      </div>
-    </div>
-  );
-}
+        <div className="divider"></div>
+        <h2 className="section-title">Login</h2>
+        <form onSubmit={handleLogin}>
+          <input
+            type="email"
+            placeholder="Enter email"
+            value={loginEmail}
+            onChange={(e) => setLoginEmail(e.target.value)}
+          />
       <Signup />
 
       <Login />

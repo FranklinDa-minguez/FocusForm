@@ -31,10 +31,10 @@ function App() {
           <input
             type="password"
             placeholder="Enter password"
-            value={loginPassword}
-            onChange={(e) => setLoginPassword(e.target.value)}
+            value={signupPassword}
+            onChange={(e) => setSignupPassword(e.target.value)}
           />
-         <button type="submit">Login</button>
+         <button type="submit">Sign Up</button>
         </form>
         <div className="divider"></div>
         <h2 className="section-title">Login</h2>
@@ -48,10 +48,10 @@ function App() {
     <input
             type="password"
             placeholder="Enter password"
-            value={signupPassword}
-            onChange={(e) => setSignupPassword(e.target.value)}
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
           />
-         <button type="submit">Sign Up</button>
+         <button type="submit">Login</button>
         </form>
       </div>
     </div>

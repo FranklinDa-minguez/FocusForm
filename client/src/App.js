@@ -22,6 +22,12 @@ function App() {
             value={signupEmail}
             onChange={(e) => setSignupEmail(e.target.value)}
           />
+          <input
+            type="password"
+            placeholder="Enter password"
+            value={loginPassword}
+            onChange={(e) => setLoginPassword(e.target.value)}
+          />
 
       <Signup />
 

@@ -10,7 +10,10 @@ function App() {
     e.preventDefault();
     console.log("Sign up:", signupEmail, signupPassword);
   };
-  
+  const handleLogin = (e) => {
+    e.preventDefault();
+    console.log("Login:", loginEmail, loginPassword);
+  };
   return (
     <div className="app-container">
       <div className="auth-card">

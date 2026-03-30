@@ -1,5 +1,5 @@
-import Signup from "./pages/Signup";
-import Login from "./pages/Login";
+import React, { useState } from "react";
+import "./App.css";
 
 function App() {
   const [signupEmail, setSignupEmail] = useState("");

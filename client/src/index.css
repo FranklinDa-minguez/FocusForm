@@ -54,3 +54,8 @@ button {
 button:hover {
   background-color: #2b4a63;
 }
+
+.divider {
+  margin: 30px 0;
+  border-top: 1px solid #ddd;
+}

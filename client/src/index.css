@@ -1,4 +1,14 @@
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-  
+
+  background: linear-gradient(to bottom, #355C7D, #6C9BC3, #8EB8DD);
+  min-height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}

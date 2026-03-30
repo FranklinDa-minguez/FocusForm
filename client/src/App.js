@@ -46,11 +46,16 @@ function App() {
             value={loginEmail}
             onChange={(e) => setLoginEmail(e.target.value)}
           />
-      <Signup />
-
-      <Login />
+    <input
+            type="password"
+            placeholder="Enter password"
+            value={signupPassword}
+            onChange={(e) => setSignupPassword(e.target.value)}
+          />
+         <button type="submit">Sign Up</button>
+        </form>
+      </div>
     </div>
   );
 }
-
 export default App;

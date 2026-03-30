@@ -13,6 +13,10 @@ function App() {
       <div className="auth-card">
         <h1>FocusForm</h1>
         <h2 className="section-title">Sign Up</h2>
+        
+        
+        <form onSubmit={handleSignup}>
+
 
       <Signup />
 

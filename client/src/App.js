@@ -6,7 +6,10 @@ function App() {
   const [signupPassword, setSignupPassword] = useState("");
   const [loginEmail, setLoginEmail] = useState("");
   const [loginPassword, setLoginPassword] = useState("");
-
+  const handleSignup = (e) => {
+    e.preventDefault();
+    console.log("Sign up:", signupEmail, signupPassword);
+  };
   
   return (
     <div className="app-container">

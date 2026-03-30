@@ -49,6 +49,12 @@ button {
   color: white;
   border: none;
   padding: 12px 24px;
+  margin-top: 12px;
+  border-radius: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s ease;
+}
 
 
 button:hover {

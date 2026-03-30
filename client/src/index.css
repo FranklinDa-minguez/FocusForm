@@ -8,9 +8,7 @@ html, body, #root {
 body {
   margin: 0;
   font-family: Arial, sans-serif;
-
-  background: linear-gradient(to bottom, #355C7D, #6C9BC3, #8EB8DD);
-  min-height: 100vh;
+  background: linear-gradient(135deg, #355C7D, #6C9BC3, #8EB8DD);
 }
 
 .app-container {
@@ -24,8 +22,8 @@ body {
   background: white;
   padding: 40px;
   border-radius: 18px;
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
-  width: 400px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+  width: 420px;
   text-align: center;
 }
 

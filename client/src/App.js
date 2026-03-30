@@ -16,7 +16,12 @@ function App() {
         
         
         <form onSubmit={handleSignup}>
-
+          <input
+            type="email"
+            placeholder="Enter email"
+            value={signupEmail}
+            onChange={(e) => setSignupEmail(e.target.value)}
+          />
 
       <Signup />
 

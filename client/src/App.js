@@ -12,6 +12,7 @@ function App() {
     <div className="app-container">
       <div className="auth-card">
         <h1>FocusForm</h1>
+        <h2 className="section-title">Sign Up</h2>
 
       <Signup />
 

@@ -34,8 +34,7 @@ function App() {
             value={loginPassword}
             onChange={(e) => setLoginPassword(e.target.value)}
           />
-          
-          <button type="submit">Login</button>
+         <button type="submit">Login</button>
         </form>
         <div className="divider"></div>
         <h2 className="section-title">Login</h2>

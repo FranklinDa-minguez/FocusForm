@@ -12,3 +12,12 @@ body {
   align-items: center;
   min-height: 100vh;
 }
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+  width: 400px;
+  text-align: center;
+}

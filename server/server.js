@@ -35,6 +35,16 @@ app.post("/session/start", async (req, res) => {
     res.status(500).json({ error: "Failed to start session" });
   }
 });
+// Get all sessions for a user
+app.get("/sessions/:userId", async (req, res) => {
+  try {
+    const sessions = await Session.find({ userId: req.params.userId });
+    res.json(sessions);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "Failed to get sessions" });
+  }
+});
 
 app.listen(5000, () => {
   console.log("Server running on port 5000");

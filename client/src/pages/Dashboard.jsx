@@ -8,7 +8,7 @@ const Dashboard = () => {
   const navigate = useNavigate();
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
-
+  const [sessions, setSessions] = useState([]);
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       setUser(currentUser);
@@ -17,7 +17,17 @@ const Dashboard = () => {
 
     return unsubscribe;
   }, []);
+  useEffect(() => {
+  if (!user) return;
 
+  fetch(`http://localhost:5000/session/${user.uid}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log("Sessions from backend:", data);
+      setSessions(data);
+    })
+    .catch(err => console.log(err));
+}, [user]);
   const email = location.state?.email || user?.email;
 
   const handleSignOut = async () => {
@@ -41,6 +51,7 @@ const Dashboard = () => {
     <div>
       <h1>Dashboard</h1>
       <p>Welcome to the Dashboard{email ? `, ${email}` : ""}!</p>
+      <pre>{JSON.stringify(sessions, null, 2)}</pre>
       <button type="button" onClick={handleSignOut}>
         Sign Out
       </button>

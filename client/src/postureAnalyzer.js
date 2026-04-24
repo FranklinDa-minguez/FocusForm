@@ -1,8 +1,9 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // postureAnalyzer.js
 //
-// Takes a single frame of MediaPipe PoseLandmarker landmarks and returns
-// a list of posture issues plus an overall score (0–100, higher = better).
+// Takes a single frame of MediaPipe PoseLandmarker landmarks (plus optional
+// external signals like phone detection) and returns a list of posture /
+// distraction issues plus an overall score (0–100, higher = better).
 //
 // All landmark coordinates are in normalized [0, 1] space (x, y).
 // ─────────────────────────────────────────────────────────────────────────────
@@ -78,6 +79,21 @@ function checkHeadTilt(lm) {
   };
 }
 
+/**
+ * PHONE DISTRACTION
+ * External signal from an object detector — a visible phone in frame is a
+ * distraction. Modeled as a bad (not severe) check so it reduces the score
+ * meaningfully without swamping posture signals.
+ */
+function checkPhoneDistraction({ phoneDetected }) {
+  return {
+    name: "Phone Detected",
+    bad: !!phoneDetected,
+    severe: false,
+    message: phoneDetected ? "Put the phone away — it’s pulling focus" : null,
+  };
+}
+
 // ── Confidence gate ───────────────────────────────────────────────────────────
 
 /**
@@ -92,11 +108,13 @@ function frameIsReliable(lm) {
 // ── Main export ───────────────────────────────────────────────────────────────
 
 /**
- * analyzePosture(landmarks)
+ * analyzePosture(landmarks, context)
  *
  * @param {Array} landmarks - The first element of result.landmarks from
  *   PoseLandmarker.detectForVideo(), i.e. an array of 33 {x, y, z, visibility}
  *   objects.
+ * @param {{ phoneDetected?: boolean }} [context] - Optional external signals,
+ *   currently just phone-detector output.
  *
  * @returns {{
  *   reliable: boolean,     // false = not enough landmark visibility
@@ -106,7 +124,7 @@ function frameIsReliable(lm) {
  *   overallBad: boolean,   // true if any check is bad
  * }}
  */
-export function analyzePosture(landmarks) {
+export function analyzePosture(landmarks, context = {}) {
   if (!landmarks || landmarks.length === 0) {
     return { reliable: false, score: 100, issues: [], checks: [], overallBad: false };
   }
@@ -118,6 +136,7 @@ export function analyzePosture(landmarks) {
   const checks = [
     checkUnevenShoulders(landmarks),
     checkHeadTilt(landmarks),
+    checkPhoneDistraction(context),
   ];
 
   const issues = checks

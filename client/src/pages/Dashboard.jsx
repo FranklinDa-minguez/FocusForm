@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
+import { PoseLandmarker, ObjectDetector, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { analyzePosture } from "../postureAnalyzer";
 
 // How many frames to average the posture score over (smooths jitter)
@@ -30,9 +30,12 @@ const Dashboard = () => {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseLandmarkerRef = useRef(null);
+  const objectDetectorRef = useRef(null);
   const animationFrameRef = useRef(null);
   const lastVideoTimeRef = useRef(-1);
   const scoreHistoryRef = useRef([]); // rolling window for smoothing
+  const lastPhoneDetectTsRef = useRef(0);
+  const phoneStateRef = useRef({ detections: [], until: 0 });
 
   // ── Auth ────────────────────────────────────────────────────────────────────
   useEffect(() => {
@@ -46,7 +49,7 @@ const Dashboard = () => {
   // ── Fetch sessions ──────────────────────────────────────────────────────────
   useEffect(() => {
     if (!user) return;
-    fetch(`http://localhost:5000/session/${user.uid}`)
+    fetch(`http://localhost:5000/sessions/${user.uid}`)
       .then((res) => res.json())
       .then((data) => setSessions(data))
       .catch((err) => console.log(err));
@@ -71,8 +74,21 @@ const Dashboard = () => {
           numPoses: 1,
         });
 
+        const objectDetector = await ObjectDetector.createFromOptions(vision, {
+          baseOptions: {
+            modelAssetPath:
+              "https://storage.googleapis.com/mediapipe-models/object_detector/efficientdet_lite0/int8/1/efficientdet_lite0.tflite",
+            delegate: "CPU",
+          },
+          runningMode: "VIDEO",
+          scoreThreshold: 0.5,
+          categoryAllowlist: ["cell phone"],
+          maxResults: 3,
+        });
+
         if (!cancelled) {
           poseLandmarkerRef.current = landmarker;
+          objectDetectorRef.current = objectDetector;
           setPoseStatus("Model ready — starting camera...");
           startCamera();
         }
@@ -126,6 +142,7 @@ const Dashboard = () => {
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       setPostureResult(null);
       scoreHistoryRef.current = [];
+      phoneStateRef.current = { detections: [], until: 0 };
     }
   };
 
@@ -166,7 +183,22 @@ const Dashboard = () => {
     if (video.currentTime !== lastVideoTimeRef.current) {
       lastVideoTimeRef.current = video.currentTime;
 
-      const result = landmarker.detectForVideo(video, performance.now());
+      const nowTs = performance.now();
+      const result = landmarker.detectForVideo(video, nowTs);
+
+      // ── Object detection (throttled ~3 Hz) ────────────────────────────────
+      if (objectDetectorRef.current && nowTs - lastPhoneDetectTsRef.current > 300) {
+        lastPhoneDetectTsRef.current = nowTs;
+        const objResult = objectDetectorRef.current.detectForVideo(video, nowTs);
+        phoneStateRef.current = {
+          detections: objResult.detections ?? [],
+          until: nowTs + 600, // hold on-screen for ~2 detection cycles
+        };
+      }
+      const phoneActive =
+        performance.now() < phoneStateRef.current.until &&
+        phoneStateRef.current.detections.length > 0;
+
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
       if (result.landmarks.length > 0) {
@@ -187,7 +219,7 @@ const Dashboard = () => {
         }
 
         // ── Analyze posture ─────────────────────────────────────────────────
-        const analysis = analyzePosture(landmarks);
+        const analysis = analyzePosture(landmarks, { phoneDetected: phoneActive });
 
         if (analysis.reliable) {
           // Smooth the score over a rolling window to avoid flickering
@@ -199,6 +231,20 @@ const Dashboard = () => {
           );
 
           setPostureResult({ ...analysis, score: smoothedScore });
+        }
+      }
+
+      // ── Draw phone bounding box (independent of skeleton toggle) ──────────
+      if (phoneActive) {
+        ctx.strokeStyle = "#E53E3E";
+        ctx.lineWidth = 3;
+        ctx.font = "14px Arial";
+        ctx.fillStyle = "#E53E3E";
+        for (const d of phoneStateRef.current.detections) {
+          const { originX, originY, width, height } = d.boundingBox;
+          ctx.strokeRect(originX, originY, width, height);
+          const score = d.categories?.[0]?.score ?? 0;
+          ctx.fillText(`Phone ${Math.round(score * 100)}%`, originX + 4, originY - 6);
         }
       }
     }
@@ -214,6 +260,10 @@ const Dashboard = () => {
     if (poseLandmarkerRef.current) {
       poseLandmarkerRef.current.close();
       poseLandmarkerRef.current = null;
+    }
+    if (objectDetectorRef.current) {
+      objectDetectorRef.current.close();
+      objectDetectorRef.current = null;
     }
   };
 

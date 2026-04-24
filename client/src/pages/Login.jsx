@@ -10,51 +10,10 @@ function Login() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
-
     try {
-      // 🔐 Firebase login
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
-
-      const uid = userCredential.user.uid;
-      console.log("Firebase UID:", uid);
-
-      alert("Login successful!");
-
-      // 🚀 Call backend to start session
-      console.log("CALLING BACKEND...");
-
-      const res = await fetch("http://localhost:5000/session/start", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          userId: uid
-        })
-      });
-
-      console.log("BACKEND CALLED");
-
-      // 🧪 DEBUG OUTPUT
-      console.log("FETCH STATUS:", res.status);
-
-      const text = await res.text();
-      console.log("RAW RESPONSE:", text);
-
-      // 👉 Navigate to dashboard
-      navigate("/dashboard", {
-        state: {
-          email: userCredential.user.email,
-          uid: uid,
-        },
-      });
-
+      await signInWithEmailAndPassword(auth, email, password);
+      navigate("/dashboard");
     } catch (error) {
-      console.log("ERROR:", error);
       alert(error.message);
     }
   };

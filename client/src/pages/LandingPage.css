@@ -1,0 +1,199 @@
+body, button, a {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.landing-wrapper {
+  background-color: #F7F8F0;
+  min-height: 100vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #355872;
+}
+
+.navbar {
+  background-color: #355872;
+  padding: 15px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links a, .nav-links span {
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  display: inline-block;
+}
+
+.nav-links a:hover, .nav-links span:hover {
+  opacity: 0.7;
+}
+
+.login-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  
+  /* align button w the rest of the nav bar */
+  display: flex;
+  align-items: center;
+  line-height: normal;
+  vertical-align: middle; 
+  outline: none;
+}
+
+
+.hero-section {
+  background-color: #7AAACE;
+  color: white;
+  padding: 50px 5%;
+  display: flex;
+  align-items: center;
+}
+
+.hero-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.hero-content {
+  flex: 1;
+  margin-top: 0;
+  padding-right: 40px;
+}
+
+.hero-image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-image img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 12px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.cta-button {
+  background: white;
+  color: #355872;
+  border: none;
+  padding: 15px 30px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.cta-button:hover {
+  background: #9CD5FF;
+}
+
+.how-it-works-visual {
+  padding: 100px 10%;
+  background-color: #F7F8F0;
+  text-align: center;
+}
+
+.section-header h2 {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.features-container {
+  display: flex;
+  gap: 30px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 50px;
+}
+
+.feature-card {
+  background: white;
+  padding: 40px;
+  border-radius: 20px;
+  flex: 1;
+  min-width: 250px;
+  max-width: 350px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+  transition: transform 0.3s;
+}
+
+.feature-card:hover {
+  transform: translateY(-10px);
+}
+
+.icon-circle {
+  width: 60px;
+  height: 60px;
+  background-color: #9CD5FF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 25px;
+  margin: 0 auto 20px;
+}
+
+.privacy-expanded {
+  padding: 100px 10%;
+  background-color: #355872;
+  color: white;
+}
+
+.privacy-subtitle {
+  color: #9CD5FF;
+  margin-bottom: 40px;
+}
+
+.privacy-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 40px;
+}
+
+.privacy-item h4 {
+  color: #7AAACE;
+  margin-bottom: 10px;
+  border-left: 3px solid #9CD5FF;
+  padding-left: 10px;
+}
+
+.footer-disclaimer {
+  padding: 40px;
+  text-align: center;
+  font-size: 12px;
+  background-color: #f0f4f8;
+}

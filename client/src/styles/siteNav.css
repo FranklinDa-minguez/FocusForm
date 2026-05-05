@@ -1,0 +1,108 @@
+.navbar {
+  /* Match .landing-wrapper (LandingPage.css) so logo + links look the same on every route */
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #355872;
+  padding: 15px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-sizing: border-box;
+}
+
+.nav-links {
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+}
+
+.nav-links a,
+.nav-text-btn {
+  text-decoration: none;
+  color: white;
+  font-size: 0.9rem;
+  transition: opacity 0.2s;
+  white-space: nowrap;
+  display: inline-block;
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font-family: inherit;
+  cursor: pointer;
+}
+
+.nav-links a:hover,
+.nav-text-btn:hover {
+  opacity: 0.7;
+}
+
+.nav-email {
+  font-size: 0.85rem;
+  color: rgba(255, 255, 255, 0.88);
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-sign-out {
+  background: rgba(255, 255, 255, 0.15);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.2s, opacity 0.2s;
+  white-space: nowrap;
+}
+
+.nav-sign-out:hover {
+  background: rgba(255, 255, 255, 0.28);
+}
+
+.logo-link {
+  text-decoration: none;
+  color: inherit;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.login-btn {
+  background: transparent;
+  border: none;
+  color: white;
+  padding: 0;
+  margin: 0;
+  font-size: 0.9rem;
+  font-family: inherit;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  line-height: normal;
+  vertical-align: middle;
+  outline: none;
+}
+
+.login-btn:hover {
+  opacity: 0.7;
+}
+
+@media (max-width: 768px) {
+  .navbar {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .nav-links {
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+  }
+}

@@ -1,75 +1,9 @@
-body, button, a {
-  font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-  -webkit-font-smoothing: antialiased;
-}
-
-body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-}
-
-html {
-  scroll-behavior: smooth;
-}
-
 .landing-wrapper {
   background-color: #F7F8F0;
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   color: #355872;
 }
-
-.navbar {
-  background-color: #355872;
-  padding: 15px 50px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  color: white;
-  position: sticky;
-  top: 0;
-  z-index: 1000;
-  box-sizing: border-box;
-}
-
-.nav-links {
-  display: flex;
-  align-items: center;
-  gap: 2rem;
-}
-
-.nav-links a, .nav-links span {
-  text-decoration: none;
-  color: white;
-  font-size: 0.9rem;
-  transition: opacity 0.2s;
-  white-space: nowrap;
-  display: inline-block;
-}
-
-.nav-links a:hover, .nav-links span:hover {
-  opacity: 0.7;
-}
-
-.login-btn {
-  background: transparent;
-  border: none;
-  color: white;
-  padding: 0;
-  margin: 0;
-  font-size: 0.9rem;
-  font-family: inherit;
-  cursor: pointer;
-  
-  /* align button w the rest of the nav bar */
-  display: flex;
-  align-items: center;
-  line-height: normal;
-  vertical-align: middle; 
-  outline: none;
-}
-
 
 .hero-section {
   background-color: #7AAACE;
@@ -119,6 +53,79 @@ html {
 
 .cta-button:hover {
   background: #9CD5FF;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+.cta-button-secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+  padding: 13px 28px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s, border-color 0.3s;
+  font-family: inherit;
+}
+
+.cta-button-secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.cta-button-tertiary {
+  background: rgba(255, 255, 255, 0.22);
+  color: white;
+  border: 2px solid transparent;
+  padding: 13px 28px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+  font-family: inherit;
+}
+
+.cta-button-tertiary:hover {
+  background: rgba(255, 255, 255, 0.32);
+}
+
+.section-cta {
+  margin-top: 48px;
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+.section-cta-button {
+  background: #355872;
+  color: white;
+  border: none;
+  padding: 14px 28px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.25s;
+}
+
+.section-cta-button:hover {
+  background: #2a4660;
+}
+
+.section-cta-button--outline {
+  background: white;
+  color: #355872;
+  border: 2px solid #355872;
+}
+
+.section-cta-button--outline:hover {
+  background: rgba(53, 88, 114, 0.06);
 }
 
 .how-it-works-visual {

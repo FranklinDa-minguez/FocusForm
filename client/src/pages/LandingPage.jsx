@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom";
+import SiteHeader from "../components/SiteHeader";
 import "./LandingPage.css";
 
 const LandingPage = () => {
@@ -6,28 +7,7 @@ const LandingPage = () => {
 
   return (
     <div className="landing-wrapper">
-      <nav className="navbar">
-        <div className="logo">FocusForm</div>
-        <div className="nav-links">
-          <a href="#how-it-works">How it Works</a>
-          <a href="#privacy">Your Privacy</a>
-
-          {/* login and signup buttons */}
-          <span 
-            style={{ cursor: 'pointer' }} 
-            onClick={() => navigate("/signup")}
-          >
-            Sign up
-          </span>
-
-          <button 
-            className="login-btn" 
-            onClick={() => navigate("/login")}
-          >
-            Login
-          </button>
-        </div>
-      </nav>
+      <SiteHeader />
 
       {/* main landing */}
       <section className="hero-section">
@@ -38,12 +18,33 @@ const LandingPage = () => {
               FocusForm uses real-time webcam tracking to help you maintain 
               perfect posture while working.
             </p>
-            <button 
-              className="cta-button" 
-              onClick={() => navigate("/signup")}
-            >
-              Start your session now
-            </button>
+            <div className="hero-actions">
+              <button
+                type="button"
+                className="cta-button"
+                onClick={() => navigate("/signup")}
+              >
+                Start your session now
+              </button>
+              <button
+                type="button"
+                className="cta-button-secondary"
+                onClick={() => {
+                  document
+                    .getElementById("how-it-works")
+                    ?.scrollIntoView({ behavior: "smooth" });
+                }}
+              >
+                See how it works
+              </button>
+              <button
+                type="button"
+                className="cta-button-tertiary"
+                onClick={() => navigate("/about")}
+              >
+                About the project
+              </button>
+            </div>
           </div>
           <div className="hero-image">
             <img src="https://images.unsplash.com/photo-1616400619175-5beda3a17896?q=80&w=1548&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="FocusForm in action" />
@@ -76,6 +77,23 @@ const LandingPage = () => {
             <h3>Habit Building</h3>
             <p>View daily graphs of your focus sessions to identify when you're most prone to fatigue.</p>
           </div>
+        </div>
+
+        <div className="section-cta">
+          <button
+            type="button"
+            className="section-cta-button"
+            onClick={() => navigate("/signup")}
+          >
+            Get started
+          </button>
+          <button
+            type="button"
+            className="section-cta-button section-cta-button--outline"
+            onClick={() => navigate("/about")}
+          >
+            Read our mission
+          </button>
         </div>
       </section>
 

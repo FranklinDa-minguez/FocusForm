@@ -1,7 +1,8 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useLocation, useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
+import SiteHeader from "../components/SiteHeader";
 import {
   PoseLandmarker,
   ObjectDetector,
@@ -13,7 +14,6 @@ import { analyzePosture } from "../postureAnalyzer";
 const SMOOTHING_WINDOW = 20;
 
 const Dashboard = () => {
-  const location = useLocation();
   const navigate = useNavigate();
 
   // ── State ─────────────────────────────────────────────
@@ -526,10 +526,6 @@ useEffect(() => {
       />
     );
 
-  const email =
-    location.state?.email ||
-    user?.email;
-
   const scoreColor =
     !postureResult
       ? "#888"
@@ -541,185 +537,171 @@ useEffect(() => {
 
   return (
     <div style={styles.page}>
-      <div style={styles.header}>
-        <h1 style={styles.title}>
-          FocusForm
-        </h1>
+      <SiteHeader />
 
-        <div style={styles.headerRight}>
-          <span
-            style={
-              styles.emailBadge
-            }
-          >
-            {email}
-          </span>
-
+      <div style={styles.contentWrap}>
+        <div style={styles.dashboardActions}>
           <button
-            style={
-              styles.signOutBtn
-            }
-            onClick={
-              handleSignOut
-            }
+            style={styles.dashboardSignOutBtn}
+            onClick={handleSignOut}
           >
             Sign Out
           </button>
         </div>
-      </div>
 
-      <div style={styles.mainGrid}>
-        {/* Camera Card */}
-        <div style={styles.card}>
-          <h2
-            style={
-              styles.cardTitle
-            }
-          >
-            Live Pose Detection
-          </h2>
-
-          <div
-            style={
-              styles.toggleRow
-            }
-          >
-            <button
+        <div style={styles.mainGrid}>
+          {/* Camera Card */}
+          <div style={styles.card}>
+            <h2
               style={
-                cameraOn
-                  ? styles.toggleBtnOn
-                  : styles.toggleBtnOff
-              }
-              onClick={
-                handleToggleCamera
+                styles.cardTitle
               }
             >
-              {cameraOn
-                ? "📷 Camera On"
-                : "📷 Camera Off"}
-            </button>
+              Live Pose Detection
+            </h2>
 
-            <button
-              style={
-                showLandmarks
-                  ? styles.toggleBtnOn
-                  : styles.toggleBtnOff
-              }
-              onClick={
-                handleToggleLandmarks
-              }
-            >
-              {showLandmarks
-                ? "🦴 Skeleton On"
-                : "🦴 Skeleton Off"}
-            </button>
-          </div>
-
-          {poseStatus && (
-            <p
-              style={
-                styles.statusText
-              }
-            >
-              {poseStatus}
-            </p>
-          )}
-
-          {cameraError ? (
-            <p
-              style={
-                styles.errorText
-              }
-            >
-              {cameraError}
-            </p>
-          ) : (
             <div
-              style={{
-                ...styles.videoWrapper,
-                opacity:
-                  cameraOn
-                    ? 1
-                    : 0.35,
-              }}
-            >
-              <video
-                ref={videoRef}
-                autoPlay
-                playsInline
-                muted
-                width={640}
-                height={480}
-                style={
-                  styles.video
-                }
-              />
-
-              <canvas
-                ref={canvasRef}
-                style={
-                  styles.canvas
-                }
-              />
-            </div>
-          )}
-        </div>
-
-        {/* Posture Card */}
-        <div style={styles.card}>
-          <h2
-            style={
-              styles.cardTitle
-            }
-          >
-            Posture Analysis
-          </h2>
-
-          {!postureResult ? (
-            <p
               style={
-                styles.statusText
+                styles.toggleRow
               }
             >
-              Waiting for reliable
-              detection...
-            </p>
-          ) : (
-            <>
-              <h1
+              <button
+                style={
+                  cameraOn
+                    ? styles.toggleBtnOn
+                    : styles.toggleBtnOff
+                }
+                onClick={
+                  handleToggleCamera
+                }
+              >
+                {cameraOn
+                  ? "📷 Camera On"
+                  : "📷 Camera Off"}
+              </button>
+
+              <button
+                style={
+                  showLandmarks
+                    ? styles.toggleBtnOn
+                    : styles.toggleBtnOff
+                }
+                onClick={
+                  handleToggleLandmarks
+                }
+              >
+                {showLandmarks
+                  ? "🦴 Skeleton On"
+                  : "🦴 Skeleton Off"}
+              </button>
+            </div>
+
+            {poseStatus && (
+              <p
+                style={
+                  styles.statusText
+                }
+              >
+                {poseStatus}
+              </p>
+            )}
+
+            {cameraError ? (
+              <p
+                style={
+                  styles.errorText
+                }
+              >
+                {cameraError}
+              </p>
+            ) : (
+              <div
                 style={{
-                  color:
-                    scoreColor,
+                  ...styles.videoWrapper,
+                  opacity:
+                    cameraOn
+                      ? 1
+                      : 0.35,
                 }}
               >
-                {
-                  postureResult.score
+                <video
+                  ref={videoRef}
+                  autoPlay
+                  playsInline
+                  muted
+                  width={640}
+                  height={480}
+                  style={
+                    styles.video
+                  }
+                />
+
+                <canvas
+                  ref={canvasRef}
+                  style={
+                    styles.canvas
+                  }
+                />
+              </div>
+            )}
+          </div>
+
+          {/* Posture Card */}
+          <div style={styles.card}>
+            <h2
+              style={
+                styles.cardTitle
+              }
+            >
+              Posture Analysis
+            </h2>
+
+            {!postureResult ? (
+              <p
+                style={
+                  styles.statusText
                 }
-                /100
-              </h1>
-
-              <p>
-                {postureResult.score >=
-                80
-                  ? "Good posture 👍"
-                  : postureResult.score >=
-                    50
-                  ? "Needs attention ⚠️"
-                  : "Poor posture 🔴"}
+              >
+                Waiting for reliable
+                detection...
               </p>
+            ) : (
+              <>
+                <h1
+                  style={{
+                    color:
+                      scoreColor,
+                  }}
+                >
+                  {
+                    postureResult.score
+                  }
+                  /100
+                </h1>
 
-              {postureResult.issues.map(
-                (
-                  issue,
-                  i
-                ) => (
-                  <p key={i}>
-                    • {issue}
-                  </p>
-                )
-              )}
-            </>
-          )}
+                <p>
+                  {postureResult.score >=
+                  80
+                    ? "Good posture 👍"
+                    : postureResult.score >=
+                      50
+                    ? "Needs attention ⚠️"
+                    : "Poor posture 🔴"}
+                </p>
+
+                {postureResult.issues.map(
+                  (
+                    issue,
+                    i
+                  ) => (
+                    <p key={i}>
+                      • {issue}
+                    </p>
+                  )
+                )}
+              </>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -732,9 +714,12 @@ const styles = {
     minHeight: "100vh",
     background:
       "linear-gradient(135deg,#355C7D,#6C9BC3,#8EB8DD)",
-    padding: "24px",
     fontFamily:
       "Arial, sans-serif",
+  },
+
+  contentWrap: {
+    padding: "0 24px 24px",
   },
 
   loading: {
@@ -743,31 +728,21 @@ const styles = {
     marginTop: "40px",
   },
 
-  header: {
+  mainGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "1fr 1fr",
+    gap: "20px",
+    marginTop: "16px",
+  },
+
+  dashboardActions: {
     display: "flex",
-    justifyContent:
-      "space-between",
-    alignItems: "center",
-    marginBottom: "24px",
+    justifyContent: "flex-end",
+    marginTop: "16px",
   },
 
-  title: {
-    color: "white",
-    margin: 0,
-  },
-
-  headerRight: {
-    display: "flex",
-    gap: "12px",
-    alignItems: "center",
-  },
-
-  emailBadge: {
-    color:
-      "rgba(255,255,255,.85)",
-  },
-
-  signOutBtn: {
+  dashboardSignOutBtn: {
     background:
       "rgba(255,255,255,.15)",
     color: "white",
@@ -776,13 +751,6 @@ const styles = {
     padding: "8px 16px",
     borderRadius: "8px",
     cursor: "pointer",
-  },
-
-  mainGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "1fr 1fr",
-    gap: "20px",
   },
 
   card: {

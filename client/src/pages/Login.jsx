@@ -131,7 +131,7 @@ function Login() {
           <input
             style={styles.input}
             type="email"
-            placeholder="you@example.com"
+            placeholder="ABC@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -142,7 +142,7 @@ function Login() {
           <input
             style={styles.input}
             type="password"
-            placeholder="••••••••"
+            placeholder="•••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

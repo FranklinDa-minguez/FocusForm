@@ -1,8 +1,7 @@
 import { useEffect, useRef, useState } from "react";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate, useLocation, useNavigate } from "react-router-dom";
 import { onAuthStateChanged, signOut } from "firebase/auth";
 import { auth } from "../firebase";
-import SiteHeader from "../components/SiteHeader";
 import {
   PoseLandmarker,
   ObjectDetector,
@@ -10,10 +9,11 @@ import {
   DrawingUtils,
 } from "@mediapipe/tasks-vision";
 import { analyzePosture } from "../postureAnalyzer";
-
+import BreakSuggestion from "../components/BreakSuggestion";
 const SMOOTHING_WINDOW = 20;
 
 const Dashboard = () => {
+  const location = useLocation();
   const navigate = useNavigate();
 
   // ── State ─────────────────────────────────────────────
@@ -30,7 +30,9 @@ const Dashboard = () => {
 
   const [cameraOn, setCameraOn] = useState(true);
   const [showLandmarks, setShowLandmarks] = useState(true);
-
+  const [sessionMinutes, setSessionMinutes] = useState(0);
+  const [postureWarnings, setPostureWarnings] = useState(0);
+  const [showBreakSuggestion, setShowBreakSuggestion] = useState(false);
   // ── Refs ──────────────────────────────────────────────
   const cameraOnRef = useRef(true);
   const showLandmarksRef = useRef(true);
@@ -61,6 +63,21 @@ const Dashboard = () => {
     return unsubscribe;
   }, []);
 
+  // ── Break Suggestion Timer ───────────────────────────
+useEffect(() => {
+  const interval = setInterval(() => {
+    setSessionMinutes((prev) => prev + 1);
+  }, 60000);
+
+  return () => clearInterval(interval);
+}, []);
+
+useEffect(() => {
+  if (sessionMinutes >= 25 || postureWarnings >= 100) {
+    setShowBreakSuggestion(true);
+  }
+}, [sessionMinutes, postureWarnings]);
+
   // ── Load Previous Sessions ───────────────────────────
   useEffect(() => {
     if (!user) return;
@@ -70,12 +87,7 @@ const Dashboard = () => {
       .then((data) => setSessions(data))
       .catch((err) => console.log(err));
   }, [user]);
-// ── Start session once user is ready ─────────────────
-useEffect(() => {
-  if (user) {
-    startSession();
-  }
-}, [user]);
+
   // ── Load Models ──────────────────────────────────────
   useEffect(() => {
     let cancelled = false;
@@ -413,6 +425,9 @@ useEffect(() => {
             ...analysis,
             score: smoothed,
           });
+          if (smoothed < 60) {
+  setPostureWarnings((prev) => prev + 1);
+}
         }
       }
 
@@ -526,6 +541,10 @@ useEffect(() => {
       />
     );
 
+  const email =
+    location.state?.email ||
+    user?.email;
+
   const scoreColor =
     !postureResult
       ? "#888"
@@ -537,173 +556,205 @@ useEffect(() => {
 
   return (
     <div style={styles.page}>
-      <SiteHeader />
+      <div style={styles.header}>
+        <h1 style={styles.title}>
+          FocusForm
+        </h1>
 
-      <div style={styles.contentWrap}>
-        <div style={styles.dashboardActions}>
+        <div style={styles.headerRight}>
+          <span
+            style={
+              styles.emailBadge
+            }
+          >
+            {email}
+          </span>
+
           <button
-            style={styles.dashboardSignOutBtn}
-            onClick={handleSignOut}
+            style={
+              styles.signOutBtn
+            }
+            onClick={
+              handleSignOut
+            }
           >
             Sign Out
           </button>
         </div>
+      </div>
 
-        <div style={styles.mainGrid}>
-          {/* Camera Card */}
-          <div style={styles.card}>
-            <h2
+      <div style={styles.mainGrid}>
+        {/* Camera Card */}
+        <div style={styles.card}>
+          <h2
+            style={
+              styles.cardTitle
+            }
+          >
+            Live Pose Detection
+          </h2>
+
+          <div
+            style={
+              styles.toggleRow
+            }
+          >
+            <button
               style={
-                styles.cardTitle
+                cameraOn
+                  ? styles.toggleBtnOn
+                  : styles.toggleBtnOff
+              }
+              onClick={
+                handleToggleCamera
               }
             >
-              Live Pose Detection
-            </h2>
+              {cameraOn
+                ? "📷 Camera On"
+                : "📷 Camera Off"}
+            </button>
 
+            <button
+              style={
+                showLandmarks
+                  ? styles.toggleBtnOn
+                  : styles.toggleBtnOff
+              }
+              onClick={
+                handleToggleLandmarks
+              }
+            >
+              {showLandmarks
+                ? "🦴 Skeleton On"
+                : "🦴 Skeleton Off"}
+            </button>
+          </div>
+
+          {poseStatus && (
+            <p
+              style={
+                styles.statusText
+              }
+            >
+              {poseStatus}
+            </p>
+          )}
+
+          {cameraError ? (
+            <p
+              style={
+                styles.errorText
+              }
+            >
+              {cameraError}
+            </p>
+          ) : (
             <div
+              style={{
+                ...styles.videoWrapper,
+                opacity:
+                  cameraOn
+                    ? 1
+                    : 0.35,
+              }}
+            >
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                width={640}
+                height={480}
+                style={
+                  styles.video
+                }
+              />
+
+              <canvas
+                ref={canvasRef}
+                style={
+                  styles.canvas
+                }
+              />
+            </div>
+          )}
+        </div>
+
+        {/* Posture Card */}
+        <div style={styles.card}>
+          <h2
+            style={
+              styles.cardTitle
+            }
+          >
+            Posture Analysis
+          </h2>
+
+          {!postureResult ? (
+            <p
               style={
-                styles.toggleRow
+                styles.statusText
               }
             >
-              <button
-                style={
-                  cameraOn
-                    ? styles.toggleBtnOn
-                    : styles.toggleBtnOff
-                }
-                onClick={
-                  handleToggleCamera
-                }
-              >
-                {cameraOn
-                  ? "📷 Camera On"
-                  : "📷 Camera Off"}
-              </button>
-
-              <button
-                style={
-                  showLandmarks
-                    ? styles.toggleBtnOn
-                    : styles.toggleBtnOff
-                }
-                onClick={
-                  handleToggleLandmarks
-                }
-              >
-                {showLandmarks
-                  ? "🦴 Skeleton On"
-                  : "🦴 Skeleton Off"}
-              </button>
-            </div>
-
-            {poseStatus && (
-              <p
-                style={
-                  styles.statusText
-                }
-              >
-                {poseStatus}
-              </p>
-            )}
-
-            {cameraError ? (
-              <p
-                style={
-                  styles.errorText
-                }
-              >
-                {cameraError}
-              </p>
-            ) : (
-              <div
+              Waiting for reliable
+              detection...
+            </p>
+          ) : (
+            <>
+              <h1
                 style={{
-                  ...styles.videoWrapper,
-                  opacity:
-                    cameraOn
-                      ? 1
-                      : 0.35,
+                  color:
+                    scoreColor,
                 }}
               >
-                <video
-                  ref={videoRef}
-                  autoPlay
-                  playsInline
-                  muted
-                  width={640}
-                  height={480}
-                  style={
-                    styles.video
-                  }
-                />
-
-                <canvas
-                  ref={canvasRef}
-                  style={
-                    styles.canvas
-                  }
-                />
-              </div>
-            )}
-          </div>
-
-          {/* Posture Card */}
-          <div style={styles.card}>
-            <h2
-              style={
-                styles.cardTitle
-              }
-            >
-              Posture Analysis
-            </h2>
-
-            {!postureResult ? (
-              <p
-                style={
-                  styles.statusText
+                {
+                  postureResult.score
                 }
-              >
-                Waiting for reliable
-                detection...
+                /100
+              </h1>
+
+              <p>
+                {postureResult.score >=
+                80
+                  ? "Good posture 👍"
+                  : postureResult.score >=
+                    50
+                  ? "Needs attention ⚠️"
+                  : "Poor posture 🔴"}
               </p>
-            ) : (
-              <>
-                <h1
-                  style={{
-                    color:
-                      scoreColor,
-                  }}
-                >
-                  {
-                    postureResult.score
-                  }
-                  /100
-                </h1>
 
-                <p>
-                  {postureResult.score >=
-                  80
-                    ? "Good posture 👍"
-                    : postureResult.score >=
-                      50
-                    ? "Needs attention ⚠️"
-                    : "Poor posture 🔴"}
-                </p>
-
-                {postureResult.issues.map(
-                  (
-                    issue,
-                    i
-                  ) => (
-                    <p key={i}>
-                      • {issue}
-                    </p>
-                  )
-                )}
-              </>
-            )}
-          </div>
+              {postureResult.issues.map(
+                (
+                  issue,
+                  i
+                ) => (
+                  <p key={i}>
+                    • {issue}
+                  </p>
+                )
+              )}
+            </>
+          )}
         </div>
+        </div>
+      {/* Sessions */}
+      <div style={styles.card}>
+        <h2 style={styles.cardTitle}>Recent Sessions</h2>
+        {sessions.length === 0 ? (
+          <p style={styles.statusText}>No sessions recorded yet.</p>
+        ) : (
+          <pre style={styles.pre}>{JSON.stringify(sessions, null, 2)}</pre>
+        )}
       </div>
+      <BreakSuggestion
+  visible={showBreakSuggestion}
+  onBreakTaken={() => {
+    setShowBreakSuggestion(false);
+    setSessionMinutes(0);
+    setPostureWarnings(0);
+  }}
+  onDismiss={() => setShowBreakSuggestion(false)}
+/>
     </div>
   );
 };
@@ -714,12 +765,9 @@ const styles = {
     minHeight: "100vh",
     background:
       "linear-gradient(135deg,#355C7D,#6C9BC3,#8EB8DD)",
+    padding: "24px",
     fontFamily:
       "Arial, sans-serif",
-  },
-
-  contentWrap: {
-    padding: "0 24px 24px",
   },
 
   loading: {
@@ -728,21 +776,31 @@ const styles = {
     marginTop: "40px",
   },
 
-  mainGrid: {
-    display: "grid",
-    gridTemplateColumns:
-      "1fr 1fr",
-    gap: "20px",
-    marginTop: "16px",
-  },
-
-  dashboardActions: {
+  header: {
     display: "flex",
-    justifyContent: "flex-end",
-    marginTop: "16px",
+    justifyContent:
+      "space-between",
+    alignItems: "center",
+    marginBottom: "24px",
   },
 
-  dashboardSignOutBtn: {
+  title: {
+    color: "white",
+    margin: 0,
+  },
+
+  headerRight: {
+    display: "flex",
+    gap: "12px",
+    alignItems: "center",
+  },
+
+  emailBadge: {
+    color:
+      "rgba(255,255,255,.85)",
+  },
+
+  signOutBtn: {
     background:
       "rgba(255,255,255,.15)",
     color: "white",
@@ -751,6 +809,13 @@ const styles = {
     padding: "8px 16px",
     borderRadius: "8px",
     cursor: "pointer",
+  },
+
+  mainGrid: {
+    display: "grid",
+    gridTemplateColumns:
+      "1fr 1fr",
+    gap: "20px",
   },
 
   card: {

@@ -9,8 +9,7 @@ app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
 // MongoDB connection
-mongoose.connect("mongodb+srv://focusformuser:focusform123@cluster0.gnxgdum.mongodb.net/focusform?appName=Cluster0")
-  .then(() => console.log("MongoDB connected"))
+mongoose.connect("mongodb+srv://tasneem:Focusform2026@cluster0.gnxgdum.mongodb.net/focusform?appName=Cluster0")  .then(() => console.log("MongoDB connected"))
   .catch((err) => console.log("MongoDB error:", err));
 
 // Test route

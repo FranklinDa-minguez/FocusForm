@@ -10,7 +10,7 @@ import {
 } from "@mediapipe/tasks-vision";
 import { analyzePosture } from "../postureAnalyzer";
 import BreakSuggestion from "../components/BreakSuggestion";
-const SMOOTHING_WINDOW = 20;
+const SMOOTHING_WINDOW = 5;
 
 const Dashboard = () => {
   const location = useLocation();
@@ -33,6 +33,7 @@ const Dashboard = () => {
   const [sessionMinutes, setSessionMinutes] = useState(0);
   const [postureWarnings, setPostureWarnings] = useState(0);
   const [showBreakSuggestion, setShowBreakSuggestion] = useState(false);
+  const [badPostureSeconds, setBadPostureSeconds] = useState(0);
   // ── Refs ──────────────────────────────────────────────
   const cameraOnRef = useRef(true);
   const showLandmarksRef = useRef(true);
@@ -64,19 +65,24 @@ const Dashboard = () => {
   }, []);
 
   // ── Break Suggestion Timer ───────────────────────────
+// ── Bad Posture Timer ───────────────────────────
 useEffect(() => {
   const interval = setInterval(() => {
-    setSessionMinutes((prev) => prev + 1);
-  }, 60000);
+    if (postureResult?.score < 60) {
+      setBadPostureSeconds((prev) => prev + 1);
+    } else {
+      setBadPostureSeconds(0);
+    }
+  }, 1000);
 
   return () => clearInterval(interval);
-}, []);
+}, [postureResult]);
 
 useEffect(() => {
-  if (sessionMinutes >= 5 || postureWarnings >= 70) {
+  if (badPostureSeconds >= 10) {
     setShowBreakSuggestion(true);
   }
-}, [sessionMinutes, postureWarnings]);
+}, [badPostureSeconds]);
 
   // ── Load Previous Sessions ───────────────────────────
   useEffect(() => {
@@ -425,9 +431,7 @@ useEffect(() => {
             ...analysis,
             score: smoothed,
           });
-          if (smoothed < 60) {
-  setPostureWarnings((prev) => prev + 1);
-}
+  // posture warnings disabled for demo timing
         }
       }
 
@@ -562,13 +566,9 @@ useEffect(() => {
         </h1>
 
         <div style={styles.headerRight}>
-          <span
-            style={
-              styles.emailBadge
-            }
-          >
-            {email}
-          </span>
+          <span style={styles.emailBadge}>
+  Hi, {email?.split("@")[0]}!
+</span>
 
           <button
             style={
@@ -737,23 +737,17 @@ useEffect(() => {
           )}
         </div>
         </div>
-      {/* Sessions */}
-      <div style={styles.card}>
-        <h2 style={styles.cardTitle}>Recent Sessions</h2>
-        {sessions.length === 0 ? (
-          <p style={styles.statusText}>No sessions recorded yet.</p>
-        ) : (
-          <pre style={styles.pre}>{JSON.stringify(sessions, null, 2)}</pre>
-        )}
-      </div>
-      <BreakSuggestion
+      
+  <BreakSuggestion
   visible={showBreakSuggestion}
   onBreakTaken={() => {
     setShowBreakSuggestion(false);
-    setSessionMinutes(0);
-    setPostureWarnings(0);
+    setBadPostureSeconds(0);
   }}
-  onDismiss={() => setShowBreakSuggestion(false)}
+  onDismiss={() => {
+    setShowBreakSuggestion(false);
+    setBadPostureSeconds(0);
+  }}
 />
     </div>
   );

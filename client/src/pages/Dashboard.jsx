@@ -73,7 +73,7 @@ useEffect(() => {
 }, []);
 
 useEffect(() => {
-  if (sessionMinutes >= 25 || postureWarnings >= 100) {
+  if (sessionMinutes >= 5 || postureWarnings >= 70) {
     setShowBreakSuggestion(true);
   }
 }, [sessionMinutes, postureWarnings]);

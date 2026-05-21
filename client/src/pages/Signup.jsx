@@ -54,14 +54,14 @@ function Signup() {
 
     subtitle: {
       textAlign: "center",
-      color: "#5d7285",
+      color: "#61798e",
       fontSize: "16px",
       marginBottom: "35px",
     },
 
     label: {
       display: "block",
-      color: "#2f5d7c",
+      color: "#2f5c7b",
       fontSize: "14px",
       fontWeight: "600",
       marginBottom: "8px",
@@ -128,7 +128,7 @@ function Signup() {
           <input
             style={styles.input}
             type="email"
-            placeholder="you@example.com"
+            placeholder="ABC@email.com"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
@@ -139,7 +139,7 @@ function Signup() {
           <input
             style={styles.input}
             type="password"
-            placeholder="••••••••"
+            placeholder="•••••"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             required

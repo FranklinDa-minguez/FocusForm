@@ -145,8 +145,8 @@ export function analyzePosture(landmarks, context = {}) {
 
   // Score: start at 100, deduct for bad checks (more for severe)
   const deductions = checks.reduce((sum, c) => {
-    if (c.severe) return sum + 25;
-    if (c.bad) return sum + 12;
+    if (c.severe) return sum + 45;
+    if (c.bad) return sum + 25;
     return sum;
   }, 0);
 

@@ -1,69 +1,163 @@
+/* Palette matches LandingPage: #F7F8F0, #7AAACE, #355872 (+ accent #9CD5FF) */
+
 .about-view {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
 }
 
-.about-main {
-  flex: 1;
-  max-width: 720px;
-  margin: 0 auto;
-  padding: 48px 24px 80px;
-  width: 100%;
-  box-sizing: border-box;
+/* Hero band — same blue as .hero-section */
+.about-hero {
+  background-color: #7aaace;
+  color: white;
+  padding: 72px 10% 64px;
+  text-align: center;
 }
 
-.about-title {
-  font-size: 2rem;
-  margin: 0 0 24px;
-  color: #355872;
+.about-hero-inner {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+.about-hero h1 {
+  font-size: 2.5rem;
+  margin: 0 0 16px;
+  font-weight: 700;
+}
+
+.about-hero-subtitle {
+  font-size: 1.15rem;
+  margin: 0;
+  line-height: 1.5;
+  color: rgba(255, 255, 255, 0.92);
+}
+
+/* Main copy — cream background like .landing-wrapper / .how-it-works-visual */
+.about-content {
+  background-color: #f7f8f0;
+  padding: 80px 10%;
+  flex: 1;
+}
+
+.about-card {
+  max-width: 720px;
+  margin: 0 auto;
+  background: white;
+  padding: 48px 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 15px rgba(53, 88, 114, 0.08);
+  position: relative;
+  overflow: hidden;
+}
+
+.about-card-accent {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(
+    90deg,
+    #355872 0%,
+    #7aaace 50%,
+    #9cd5ff 100%
+  );
 }
 
 .about-body {
   font-size: 1.1rem;
-  line-height: 1.65;
-  margin: 0 0 32px;
+  line-height: 1.7;
+  margin: 0;
   color: #355872;
+}
+
+/* Footer band — navy like .privacy-expanded */
+.about-cta {
+  background-color: #355872;
+  color: white;
+  padding: 72px 10%;
+  text-align: center;
+}
+
+.about-cta-inner {
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.about-cta h2 {
+  font-size: 2rem;
+  margin: 0 0 12px;
+  color: white;
+}
+
+.about-cta-subtitle {
+  color: #9cd5ff;
+  margin: 0 0 32px;
+  font-size: 1.05rem;
+  line-height: 1.5;
 }
 
 .about-actions {
   display: flex;
   flex-wrap: wrap;
   gap: 12px;
+  justify-content: center;
   align-items: center;
 }
 
-.about-primary-link {
+.about-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   padding: 14px 28px;
   font-size: 16px;
   border-radius: 8px;
-  background: #355872;
-  color: white;
   text-decoration: none;
-  transition: background 0.2s, opacity 0.2s;
+  font-family: inherit;
+  cursor: pointer;
+  transition: background 0.25s, border-color 0.25s, opacity 0.25s;
 }
 
-.about-primary-link:hover {
-  background: #2a4660;
-}
-
-.about-secondary-link {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 12px 26px;
-  font-size: 16px;
-  border-radius: 8px;
-  border: 2px solid #355872;
+/* Matches landing .cta-button */
+.about-btn--primary {
+  background: white;
   color: #355872;
-  text-decoration: none;
-  background: transparent;
-  transition: background 0.2s, color 0.2s;
+  border: none;
 }
 
-.about-secondary-link:hover {
-  background: rgba(53, 88, 114, 0.08);
+.about-btn--primary:hover {
+  background: #9cd5ff;
+}
+
+/* Matches landing .cta-button-secondary on hero */
+.about-btn--secondary {
+  background: transparent;
+  color: white;
+  border: 2px solid white;
+}
+
+.about-btn--secondary:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+@media (max-width: 768px) {
+  .about-hero {
+    padding: 56px 6% 48px;
+  }
+
+  .about-hero h1 {
+    font-size: 2rem;
+  }
+
+  .about-content {
+    padding: 48px 6%;
+  }
+
+  .about-card {
+    padding: 32px 24px;
+  }
+
+  .about-cta {
+    padding: 56px 6%;
+  }
 }

@@ -1,3 +1,6 @@
+const path = require("path");
+require("dotenv").config({ path: path.join(__dirname, ".env") });
+
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
@@ -8,10 +11,23 @@ const app = express();
 app.use(cors({ origin: "http://localhost:3000" }));
 app.use(express.json());
 
-// MongoDB connection
-mongoose.connect("mongodb+srv://focusformuser:focusform123@cluster0.gnxgdum.mongodb.net/focusform?appName=Cluster0")
-  .then(() => console.log("MongoDB connected"))
-  .catch((err) => console.log("MongoDB error:", err));
+const mongoUri = process.env.MONGODB_URI?.trim();
+
+if (!mongoUri) {
+  console.error(
+    "Missing MONGODB_URI in server/.env\n" +
+      "  1. cd server\n" +
+      "  2. cp .env.example .env\n" +
+      "  3. Edit .env and paste your Atlas connection string on the MONGODB_URI= line (no quotes)\n" +
+      "  4. npm start\n" +
+      "Get the URI from a teammate or MongoDB Atlas → Connect → Drivers."
+  );
+} else {
+  mongoose
+    .connect(mongoUri)
+    .then(() => console.log("MongoDB connected"))
+    .catch((err) => console.error("MongoDB error:", err.message));
+}
 
 // Test route
 app.get("/", (req, res) => {
@@ -25,7 +41,7 @@ app.post("/session/start", async (req, res) => {
 
     const session = new Session({
       userId,
-      startTime: new Date()
+      startTime: new Date(),
     });
 
     await session.save();
@@ -35,6 +51,7 @@ app.post("/session/start", async (req, res) => {
     res.status(500).json({ error: "Failed to start session" });
   }
 });
+
 // Get all sessions for a user
 app.get("/sessions/:userId", async (req, res) => {
   try {

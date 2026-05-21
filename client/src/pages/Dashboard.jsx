@@ -53,7 +53,7 @@ const Dashboard = () => {
     detections: [],
     until: 0,
   });
-
+  const badPostureStartRef = useRef(null);
   // ── Auth Listener ────────────────────────────────────
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -67,22 +67,23 @@ const Dashboard = () => {
   // ── Break Suggestion Timer ───────────────────────────
 // ── Bad Posture Timer ───────────────────────────
 useEffect(() => {
-  const interval = setInterval(() => {
-    if (postureResult?.score < 60) {
-      setBadPostureSeconds((prev) => prev + 1);
-    } else {
-      setBadPostureSeconds(0);
+  if (!postureResult) return;
+
+  if (postureResult.score < 60 && !showBreakSuggestion) {
+    if (!badPostureStartRef.current) {
+      badPostureStartRef.current = Date.now();
     }
-  }, 1000);
 
-  return () => clearInterval(interval);
-}, [postureResult]);
+    const seconds =
+      (Date.now() - badPostureStartRef.current) / 1000;
 
-useEffect(() => {
-  if (badPostureSeconds >= 10) {
-    setShowBreakSuggestion(true);
+    if (seconds >= 7) {
+      setShowBreakSuggestion(true);
+    }
+  } else {
+    badPostureStartRef.current = null;
   }
-}, [badPostureSeconds]);
+}, [postureResult, showBreakSuggestion]);
 
   // ── Load Previous Sessions ───────────────────────────
   useEffect(() => {
